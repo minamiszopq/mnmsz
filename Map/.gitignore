@@ -1,0 +1,9 @@
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xccheckout
+*.moved-aside
+.DS_Store
+
+# Local API-key and build configuration files
+Secrets.xcconfig
