@@ -367,6 +367,7 @@ struct ContentView: View {
         suggestions = []
         hasSearchedLocations = false
         searchErrorMessage = nil
+        isSearchingLocations = false
         isSearchFocused = false
 
         Task { await loadWeather(at: suggestion) }
@@ -374,7 +375,6 @@ struct ContentView: View {
 
     @MainActor
     private func loadWeather(at location: LocationSuggestion) async {
-        guard !isLoadingWeather else { return }
         isLoadingWeather = true
         errorMessage = nil
 
@@ -383,10 +383,12 @@ struct ContentView: View {
             async let currentWeather = service.fetchWeather(at: location)
             async let cityForecast = service.fetchForecast(at: location)
             let (newWeather, newForecast) = try await (currentWeather, cityForecast)
+            // 取得中に別の都市が選ばれた場合、古い結果は捨てる。
+            guard location == selectedLocation else { return }
             weather = newWeather
             forecast = newForecast
-            selectedLocation = location
         } catch {
+            guard location == selectedLocation else { return }
             errorMessage = errorMessage(for: error)
         }
 
@@ -394,7 +396,7 @@ struct ContentView: View {
     }
 
     private func errorMessage(for error: Error) -> String {
-        (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+        error.localizedDescription
     }
 }
 
@@ -424,9 +426,6 @@ private func weatherSymbol(_ condition: String) -> String {
     }
 }
 
-// Xcodeキャンバス用のプレビュー。
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+#Preview {
+    ContentView()
 }

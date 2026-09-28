@@ -208,19 +208,13 @@ struct ContentView: View {
             do {
                 let response = try await MKLocalSearch(request: request).start()
                 let places = response.mapItems.prefix(20).map(Place.init)
-
-                await MainActor.run {
-                    searchResults = places
-                    selectedPlaceID = places.first?.id
-                    position = .region(response.boundingRegion)
-                    isSearching = false
-                }
+                searchResults = places
+                selectedPlaceID = places.first?.id
+                position = .region(response.boundingRegion)
             } catch {
-                await MainActor.run {
-                    searchError = error.localizedDescription
-                    isSearching = false
-                }
+                searchError = error.localizedDescription
             }
+            isSearching = false
         }
     }
 

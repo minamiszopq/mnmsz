@@ -61,9 +61,8 @@ final class HighwayService: ObservableObject {
             } catch is CancellationError {
                 return
             } catch {
-                if currentKey == key {
-                    currentKey = nil
-                }
+                guard currentKey == key else { return }
+                currentKey = nil
                 errorMessage = error.localizedDescription
             }
         }
@@ -83,12 +82,13 @@ final class HighwayService: ObservableObject {
     }
 
     private func fetchRoutes(for key: RegionKey) async throws -> [HighwayRoute] {
+        let bbox = "(\(key.south),\(key.west),\(key.north),\(key.east))"
         let query = """
         [out:json][timeout:20];
         (
-          way["highway"~"^(motorway|motorway_link)$"](\(key.south),\(key.west),\(key.north),\(key.east));
-          way["expressway"="yes"](\(key.south),\(key.west),\(key.north),\(key.east));
-          way["motorroad"="yes"]["highway"~"^(trunk|trunk_link)$"](\(key.south),\(key.west),\(key.north),\(key.east));
+          way["highway"~"^(motorway|motorway_link)$"]\(bbox);
+          way["expressway"="yes"]\(bbox);
+          way["motorroad"="yes"]["highway"~"^(trunk|trunk_link)$"]\(bbox);
         );
         out tags geom;
         """
