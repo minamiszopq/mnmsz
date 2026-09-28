@@ -12,8 +12,6 @@
 | [Weather](./Weather) | SwiftUI / OpenWeather API | 都市名の候補検索、現在の天気と 3 時間ごとの予報を表示 |
 | [Memo](./Memo) | SwiftUI | フォルダ階層とドラッグ＆ドロップに対応したメモアプリ |
 
-## 取り組んだこと
-
 - **設計**: 画面とデータ処理を分け、ロジックはユニットテストで検証（ShukatsuManager、MusclesMemo）
 - **ドキュメント**: 企画書と仕様の判断メモを残し、判断の経緯をたどれるようにした（[ShukatsuManager/docs](./ShukatsuManager/docs)）
 - **非同期処理**: 検索の入力待ち（デバウンス）とキャンセル、古いレスポンスの破棄、複数 API サーバーへのフォールバック（Weather、Map）
